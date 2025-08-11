@@ -1,1 +1,21 @@
+/* Micro-interactions */
+.stat-card::after{
+  content:""; position:absolute; inset:auto -40% 0 auto; width:160%; height:2px;
+  background: linear-gradient(90deg, transparent, rgba(124,77,255,.9), rgba(0,212,255,.9), transparent);
+  transform: translateX(-60%); animation: shimmer 4s linear infinite;
+}
+@keyframes shimmer{ 0%{ transform: translateX(-60%);} 100%{ transform: translateX(60%);} }
+.card::before{
+  content:""; position:absolute; inset:-1px; border-radius:inherit;
+  background: radial-gradient(120px 60px at 10% -20%, rgba(255,255,255,.2), transparent 60%);
+  pointer-events:none;
+}
+.btn.primary{ position:relative; overflow:hidden }
+.btn.primary::after{
+  content:""; position:absolute; inset:0; opacity:0;
+  background: radial-gradient(300px 120px at var(--x,50%) var(--y,50%), rgba(255,255,255,.22), transparent 40%);
+  transition:.25s;
+}
+.btn.primary:hover::after{ opacity:.8 }
+.input:focus, .btn:focus{ box-shadow:0 0 0 3px rgba(0,212,255,.25) }
 
