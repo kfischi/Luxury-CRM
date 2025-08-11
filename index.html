@@ -1,1 +1,121 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🏖️ LuxuryStays CRM</title>
+  <meta name="description" content="מערכת CRM פרימיום לניהול לקוחות צימרים ווילות יוקרה" />
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="assets/images/icons/icon-192.png">
+  <link rel="apple-touch-icon" href="assets/images/icons/icon-192.png">
+  <link rel="stylesheet" href="assets/css/premium-styles.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <!-- Libs -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+</head>
+<body class="app">
+  <div id="app-blur-bg"></div>
 
+  <header class="topbar glass">
+    <div class="brand">
+      <img src="assets/images/logo.png" alt="LuxuryStays" onerror="this.style.display='none'">
+      <span>LuxuryStays CRM</span>
+    </div>
+    <div class="top-actions">
+      <input id="globalSearch" class="input glass" type="search" placeholder="חיפוש לקוח, טלפון, אימייל, עיר..." />
+      <button id="btnAddClient" class="btn primary">＋ לקוח חדש</button>
+      <button id="btnExport" class="btn ghost">⬇ יצוא CSV</button>
+      <button id="btnInstallPWA" class="btn ghost" hidden>⬇ התקנת אפליקציה</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="stats-grid">
+      <article class="stat-card glass" data-filter="new_lead">
+        <div class="stat-title">לידים חדשים</div>
+        <div class="stat-value" id="statNewLeads">0</div>
+      </article>
+      <article class="stat-card glass" data-filter="negotiation">
+        <div class="stat-title">משא ומתן</div>
+        <div class="stat-value" id="statNegotiation">0</div>
+      </article>
+      <article class="stat-card glass" data-filter="pending">
+        <div class="stat-title">מחכה לאישור</div>
+        <div class="stat-value" id="statPending">0</div>
+      </article>
+      <article class="stat-card glass" data-filter="booked">
+        <div class="stat-title">הזמנה פעילה</div>
+        <div class="stat-value" id="statBooked">0</div>
+      </article>
+      <article class="stat-card glass" data-filter="completed">
+        <div class="stat-title">הושלם</div>
+        <div class="stat-value" id="statCompleted">0</div>
+      </article>
+      <article class="stat-card glass">
+        <div class="stat-title">הכנסות (עמלה)</div>
+        <div class="stat-value" id="statRevenue">₪0</div>
+      </article>
+    </section>
+
+    <section class="dash-grid">
+      <div class="glass panel">
+        <div class="panel-header">
+          <h3>צנרת מכירות</h3>
+          <div class="panel-actions">
+            <select id="regionFilter" class="input glass">
+              <option value="">כל האזורים</option>
+              <option>north</option><option>center</option><option>jerusalem</option><option>south</option>
+            </select>
+            <select id="sourceFilter" class="input glass">
+              <option value="">כל המקורות</option>
+              <option>website</option><option>instagram</option><option>facebook</option><option>google</option><option>referral</option><option>phone</option>
+            </select>
+          </div>
+        </div>
+        <div class="kanban" id="kanban"></div>
+      </div>
+
+      <div class="glass panel">
+        <div class="panel-header">
+          <h3>סטטיסטיקות</h3>
+        </div>
+        <canvas id="kpiChart" height="160"></canvas>
+      </div>
+    </section>
+  </main>
+
+  <!-- Floating Actions -->
+  <div class="fab-wrap">
+    <button id="fabQuickActions" class="fab glass" title="פעולות מהירות">⋮</button>
+    <div class="fab-menu glass" id="fabMenu">
+      <button data-action="quick-whatsapp" class="btn mini">WhatsApp</button>
+      <button data-action="quick-email" class="btn mini">Email</button>
+      <button data-action="quick-call" class="btn mini">טלפון</button>
+    </div>
+  </div>
+
+  <!-- Modals & Toasts roots -->
+  <div id="modalRoot"></div>
+  <div id="toasts"></div>
+
+  <script type="module">
+    import './config/settings.js';
+    import './assets/js/utils.js';
+    import './components/notifications.js';
+    import './components/modal.js';
+    import './assets/js/communications.js';
+    import './assets/js/charts.js';
+    import './assets/js/crm-core.js';
+  </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('service-worker.js'));
+    }
+  </script>
+</body>
+</html>
