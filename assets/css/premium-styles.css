@@ -1,1 +1,74 @@
+/* Premium Glass Morphism Theme */
+:root{
+  --bg: #0b1020;
+  --card: rgba(255,255,255,0.08);
+  --border: rgba(255,255,255,0.22);
+  --text: #e8ecf4;
+  --muted: #aab3c8;
+  --accent1: #7c4dff;
+  --accent2: #00d4ff;
+  --blur: 18px;
+  --radius: 16px;
+  --shadow: 0 10px 30px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; font-family:"Heebo",system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  color:var(--text);
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(124,77,255,.25), transparent 60%),
+    radial-gradient(1000px 500px at -10% 110%, rgba(0,212,255,.22), transparent 60%),
+    linear-gradient(180deg, #070b17, #0b1020 40%, #0b0f1a);
+  overflow-x:hidden;
+}
+#app-blur-bg{ position:fixed; inset:0; background: radial-gradient(1200px 600px at 10% 0%, rgba(0,212,255,.08), transparent 60%); opacity:.35; pointer-events:none;}
+.glass{ background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.04)); border:1px solid var(--border); box-shadow:var(--shadow); backdrop-filter: blur(var(--blur)) saturate(130%); border-radius:var(--radius);}
+.topbar{ position:sticky; top:0; z-index:20; display:flex; align-items:center; justify-content:space-between; padding:14px 24px;}
+.brand{ display:flex; align-items:center; gap:10px; font-weight:700}
+.top-actions{ display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+.input{ padding:10px 12px; border-radius:12px; border:1px solid transparent; background:rgba(255,255,255,.09); color:var(--text); outline:none; transition:.3s}
+.input:focus{ border-color:var(--accent2); background:rgba(255,255,255,.12)}
+.btn{ border:none; cursor:pointer; padding:10px 14px; border-radius:12px; color:#fff; background:rgba(255,255,255,.12); transition:.25s transform,.25s background,.25s box-shadow}
+.btn:hover{ transform:translateY(-1px); background:rgba(255,255,255,.18)}
+.btn.primary{ background: linear-gradient(135deg, var(--accent1), var(--accent2)); box-shadow:0 8px 20px rgba(124,77,255,.35)}
+.btn.ghost{ background:transparent; border:1px solid var(--border)}
+.btn.mini{ padding:8px 10px; font-size:.9rem}
+.container{ max-width:1200px; margin:24px auto; padding:0 16px}
+.stats-grid{ display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:16px; margin-bottom:20px}
+.stat-card{ padding:16px; cursor:pointer; transition:.25s; position:relative; overflow:hidden}
+.stat-card:hover{ transform:translateY(-2px)}
+.stat-title{ color:var(--muted); font-size:.9rem}
+.stat-value{ font-size:1.8rem; margin-top:6px; font-weight:700}
+.panel{ padding:16px}
+.panel-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px}
+.kanban{ display:grid; grid-template-columns:repeat(6,minmax(220px,1fr)); gap:12px; min-height:280px}
+.kanban-column{ display:flex; flex-direction:column; gap:10px; padding:12px; min-height:260px; border:1px dashed rgba(255,255,255,.18)}
+.kanban-title{ display:flex; align-items:center; justify-content:space-between; color:var(--muted); margin-bottom:6px}
+.card{ padding:12px; border-radius:14px; border:1px solid rgba(255,255,255,.16); background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.06)); box-shadow:0 6px 18px rgba(0,0,0,.25); transition:.25s transform,.25s box-shadow}
+.card:hover{ transform:translateY(-2px); box-shadow:0 10px 24px rgba(0,0,0,.35)}
+.card .meta{ display:flex; gap:8px; flex-wrap:wrap; color:var(--muted); font-size:.85rem}
+.badge{ padding:2px 8px; border-radius:999px; border:1px solid var(--border)}
+.card .name{ font-weight:700; margin-bottom:6px}
+.card .notes{ color:var(--muted); font-size:.92rem; margin-top:6px}
+.fab-wrap{ position:fixed; left:18px; bottom:18px; z-index:50}
+.fab{ width:52px; height:52px; border-radius:50%}
+.fab-menu{ margin-top:8px; display:none; padding:8px}
+.fab-wrap.open .fab-menu{ display:flex; gap:8px; flex-direction:column}
+/* Landing */
+.landing .landing-hero{ min-height:45vh; display:grid; place-items:center; background: linear-gradient(180deg, #070b17, #0b1020)}
+.hero-card{ padding:32px; text-align:center}
+.landing .landing-content{ max-width:900px; margin:-60px auto 40px; padding:0 16px}
+.form-card{ padding:20px}
+.grid-2{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px}
+label{ display:block; font-size:.95rem; color:var(--muted)}
+label .input, label textarea, label select{ width:100%; margin-top:6px}
+.muted{ color:var(--muted); font-size:.9rem}
+#toasts{ position:fixed; top:90px; right:18px; display:flex; flex-direction:column; gap:10px; z-index:100}
+.toast{ padding:12px 14px; border-radius:12px; border:1px solid var(--border); min-width:240px}
+.toast.success{ background: linear-gradient(135deg, rgba(0,212,255,.18), rgba(0,212,255,.06))}
+.toast.error{ background: linear-gradient(135deg, rgba(255,77,109,.22), rgba(255,77,109,.08))}
+@media (max-width:1100px){ .stats-grid{ grid-template-columns:repeat(3,1fr)} .kanban{ grid-template-columns:repeat(3,minmax(220px,1fr))}}
+@media (max-width:720px){ .top-actions{ width:100%} .stats-grid{ grid-template-columns:repeat(2,1fr)} .kanban{ grid-template-columns:repeat(2,minmax(220px,1fr))} .grid-2{ grid-template-columns:1fr}}
+@media (max-width:480px){ .stats-grid{ grid-template-columns:1fr} .kanban{ grid-template-columns:1fr}}
 
