@@ -1,1 +1,73 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LuxuryStays - בקשת אירוח</title>
+  <link rel="stylesheet" href="assets/css/premium-styles.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="assets/images/icons/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="landing">
+  <div class="landing-hero">
+    <div class="glass hero-card">
+      <h1>חוויה יוקרתית בלחיצת כפתור</h1>
+      <p>השאירו פרטים ונאתר עבורכם את הווילה או הצימר המושלם.</p>
+    </div>
+  </div>
 
+  <main class="landing-content">
+    <form id="leadForm" class="glass form-card">
+      <h2>בקשת אירוח</h2>
+      <div class="grid-2">
+        <label>שם מלא <input required name="name" class="input glass" placeholder="שם ושם משפחה"></label>
+        <label>טלפון <input name="phone" class="input glass" placeholder="050-0000000"></label>
+        <label>אימייל <input type="email" name="email" class="input glass" placeholder="name@email.com"></label>
+        <label>אזור מועדף
+          <select name="preferred_region" class="input glass">
+            <option>north</option><option>center</option><option>jerusalem</option><option>south</option>
+          </select>
+        </label>
+        <label>סוג אירוע
+          <select name="event_type" class="input glass">
+            <option>wedding</option><option>bar_mitzvah</option><option>birthday</option><option>corporate</option><option>family</option><option>vacation</option>
+          </select>
+        </label>
+        <label>תאריך אירוע <input type="date" name="event_date" class="input glass"></label>
+        <label>מספר אורחים <input type="number" min="1" name="guests" class="input glass" placeholder="מספר משוער"></label>
+        <label>תקציב <input name="budget" class="input glass" placeholder="למשל: 20000-35000"></label>
+      </div>
+      <label>הערות <textarea name="notes" class="input glass" rows="4" placeholder="העדפות מיוחדות, דרישות כשרות, נגישות ועוד"></textarea></label>
+      <button class="btn primary" type="submit">שליחה</button>
+      <p class="muted">בלחיצה על שליחה, פרטיך יישמרו לצורך חזרה אליך בהתאם למדיניות הפרטיות.</p>
+    </form>
+  </main>
+
+  <div id="toasts"></div>
+
+  <script type="module">
+    import './assets/js/utils.js';
+    import './components/notifications.js';
+    const form = document.getElementById('leadForm');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form).entries());
+      data.status = 'new_lead';
+      data.source = 'website';
+      data.created_at = new Date().toISOString();
+      try {
+        await window.CRM.saveClientToSource(data);
+        window.CRM.notify.success('תודה! פנייתך התקבלה.');
+        form.reset();
+      } catch (err) {
+        console.error(err);
+        window.CRM.notify.error('שמירה נכשלה.');
+      }
+    });
+  </script>
+</body>
+</html>
