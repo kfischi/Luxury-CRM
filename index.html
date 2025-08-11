@@ -1,4 +1,473 @@
 <!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מתחמי נופש יוקרתיים - הירשמו עכשיו</title>
+
+  <!-- Supabase (unpkg, v2) -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+  <style>
+    /* ----- כל ה-CSS המקורי שלך (ללא שינוי) ----- */
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Arial',sans-serif;background:linear-gradient(135deg,#0f0f23 0%,#1a1a2e 50%,#16213e 100%);min-height:100vh;color:#fff;line-height:1.6;position:relative;overflow-x:hidden}
+    body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(45deg,rgba(89,112,234,.1) 0%,rgba(134,89,234,.1)25%,rgba(89,200,234,.1)50%,rgba(234,89,180,.1)75%,rgba(89,112,234,.1)100%);background-size:400% 400%;animation:gradientMove 15s ease infinite;z-index:-1}
+    @keyframes gradientMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+    .floating-elements{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1}
+    .floating-element{position:absolute;background:rgba(255,255,255,.03);border-radius:50%;animation:float 20s infinite ease-in-out}
+    .floating-element:nth-child(1){width:80px;height:80px;top:20%;left:10%;animation-delay:0s}
+    .floating-element:nth-child(2){width:120px;height:120px;top:60%;right:10%;animation-delay:5s}
+    .floating-element:nth-child(3){width:60px;height:60px;top:80%;left:30%;animation-delay:10s}
+    @keyframes float{0%,100%{transform:translateY(0) rotate(0)}33%{transform:translateY(-30px) rotate(120deg)}66%{transform:translateY(30px) rotate(240deg)}}
+    .container{max-width:1200px;margin:0 auto;padding:0 20px;position:relative;z-index:2}
+    .hero{text-align:center;padding:80px 0 60px;position:relative}
+    .hero h1{font-size:3.5rem;font-weight:700;margin-bottom:20px;background:linear-gradient(135deg,#fff,#5970ea,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-shadow:0 5px 15px rgba(89,112,234,.3);animation:textGlow 3s ease-in-out infinite alternate}
+    @keyframes textGlow{from{filter:brightness(1)}to{filter:brightness(1.2)}}
+    .hero p{font-size:1.3rem;margin-bottom:40px;color:rgba(255,255,255,.9);text-shadow:0 2px 10px rgba(0,0,0,.5)}
+    .urgency-banner{background:linear-gradient(135deg,#ff6b6b,#ff8e53,#ff6b6b);background-size:200% 200%;animation:gradientShift 2s ease-in-out infinite alternate;padding:15px;border-radius:50px;text-align:center;margin:40px auto;max-width:600px;box-shadow:0 10px 30px rgba(255,107,107,.4);border:2px solid rgba(255,255,255,.2)}
+    @keyframes gradientShift{0%{background-position:0% 50%}100%{background-position:100% 50%}}
+    .urgency-banner h3{color:#fff;font-size:1.2rem;font-weight:600;text-shadow:0 2px 8px rgba(0,0,0,.3)}
+    .experience-section{margin:60px 0;text-align:center}
+    .experience-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:30px;margin:40px 0}
+    .stat-card{background:rgba(15,15,35,.4);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:30px 20px;text-align:center;transition:all .3s ease;box-shadow:0 10px 30px rgba(0,0,0,.2);position:relative;overflow:hidden}
+    .stat-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(45deg,transparent,rgba(89,112,234,.1),transparent);animation:cardShine 3s linear infinite}
+    @keyframes cardShine{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+    .stat-card:hover{transform:translateY(-10px) scale(1.05);box-shadow:0 20px 50px rgba(89,112,234,.3);border-color:rgba(89,112,234,.5)}
+    .stat-number{font-size:2.5rem;font-weight:700;color:#5970ea;margin-bottom:10px;position:relative;z-index:1}
+    .stat-label{color:rgba(255,255,255,.9);font-size:1rem;position:relative;z-index:1}
+    .testimonials{margin:60px 0}
+    .testimonials-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:30px;margin:40px 0}
+    .testimonial-card{background:rgba(15,15,35,.4);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:25px;transition:all .3s ease;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+    .testimonial-card:hover{transform:translateY(-5px);box-shadow:0 15px 40px rgba(89,112,234,.2)}
+    .testimonial-quote{font-style:italic;color:rgba(255,255,255,.9);margin-bottom:15px;font-size:.95rem;line-height:1.6}
+    .testimonial-author{color:#5970ea;font-weight:600;font-size:.9rem}
+    .benefits{margin:60px 0}
+    .benefits-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:30px;margin:40px 0}
+    .benefit-card{background:rgba(15,15,35,.4);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:30px;text-align:center;transition:all .3s ease;box-shadow:0 10px 30px rgba(0,0,0,.2);position:relative;overflow:hidden}
+    .benefit-card::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent);transition:left .5s ease}
+    .benefit-card:hover::before{left:100%}
+    .benefit-card:hover{transform:translateY(-10px) rotateY(5deg);box-shadow:0 20px 50px rgba(89,112,234,.3)}
+    .benefit-icon{font-size:3rem;margin-bottom:20px;position:relative;z-index:1}
+    .benefit-title{font-size:1.3rem;font-weight:600;margin-bottom:15px;color:#fff;position:relative;z-index:1}
+    .benefit-desc{color:rgba(255,255,255,.8);position:relative;z-index:1}
+    .form-container{margin:60px 0}
+    .form-section{background:rgba(15,15,35,.4);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,.1);border-radius:25px;padding:40px;margin:30px 0;box-shadow:0 15px 50px rgba(0,0,0,.3);transition:all .3s ease}
+    .form-section:hover{border-color:rgba(89,112,234,.3);box-shadow:0 20px 60px rgba(89,112,234,.2)}
+    .section-title{font-size:1.5rem;font-weight:600;margin-bottom:25px;color:#5970ea;text-align:center;display:flex;align-items:center;justify-content:center;gap:10px}
+    .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:25px}
+    .form-group{margin-bottom:25px}
+    .form-group label{display:block;margin-bottom:8px;color:rgba(255,255,255,.9);font-weight:500;font-size:.95rem}
+    .form-group input,.form-group select,.form-group textarea{width:100%;padding:15px 20px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.2);border-radius:12px;color:#fff;font-size:1rem;transition:all .3s ease;backdrop-filter:blur(10px)}
+    .form-group input::placeholder,.form-group textarea::placeholder{color:rgba(255,255,255,.5)}
+    .form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:#5970ea;background:rgba(89,112,234,.1);box-shadow:0 0 20px rgba(89,112,234,.3);transform:scale(1.02)}
+    .form-group select{cursor:pointer;background-color:rgba(15,15,35,.9);color:#fff}
+    .form-group select option{background-color:rgba(15,15,35,.95);color:#fff;padding:10px}
+    .checkbox-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-top:15px}
+    .checkbox-item{display:flex;align-items:center;gap:10px;padding:12px 15px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;transition:all .3s ease;cursor:pointer}
+    .checkbox-item:hover{background:rgba(89,112,234,.1);border-color:rgba(89,112,234,.3);transform:scale(1.02)}
+    .checkbox-item input[type="checkbox"]{width:auto;margin:0;accent-color:#5970ea}
+    .checkbox-item label{margin:0;cursor:pointer;color:rgba(255,255,255,.9);font-size:.9rem}
+    .submit-container{text-align:center;margin:50px 0}
+    .submit-btn{background:linear-gradient(135deg,#5970ea,#a78bfa);border:none;color:#fff;padding:20px 50px;font-size:1.2rem;font-weight:600;border-radius:50px;cursor:pointer;transition:all .3s ease;box-shadow:0 10px 30px rgba(89,112,234,.4);position:relative;overflow:hidden}
+    .submit-btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);transition:left .5s ease}
+    .submit-btn:hover::before{left:100%}
+    .submit-btn:hover{transform:translateY(-3px) scale(1.05);box-shadow:0 15px 40px rgba(89,112,234,.6)}
+    .submit-btn:active{transform:translateY(-1px) scale(1.02)}
+    .success-message{background:linear-gradient(135deg,#10b981,#34d399);color:#fff;padding:20px;border-radius:15px;text-align:center;margin:30px 0;display:none;animation:slideInUp .5s ease;box-shadow:0 10px 30px rgba(16,185,129,.3)}
+    @keyframes slideInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+    .trust-section{background:rgba(15,15,35,.6);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);border-radius:25px;padding:40px;text-align:center;margin:60px 0;box-shadow:0 15px 50px rgba(0,0,0,.3)}
+    .trust-title{font-size:1.8rem;font-weight:600;margin-bottom:20px;color:#5970ea}
+    .trust-desc{color:rgba(255,255,255,.9);font-size:1.1rem;line-height:1.6}
+    @media (max-width:768px){.hero h1{font-size:2.5rem}.hero p{font-size:1.1rem}.form-section{padding:25px}.form-grid{grid-template-columns:1fr}.checkbox-grid{grid-template-columns:1fr}.submit-btn{padding:15px 30px;font-size:1rem}}
+    @media (max-width:480px){.container{padding:0 15px}.hero{padding:60px 0 40px}.hero h1{font-size:2rem}.benefits-grid{grid-template-columns:1fr}}
+    .fade-in{opacity:0;animation:fadeIn .6s ease forwards}
+    @keyframes fadeIn{to{opacity:1}}
+    .slide-up{opacity:0;transform:translateY(30px);animation:slideUp .6s ease forwards}
+    @keyframes slideUp{to{opacity:1;transform:translateY(0)}}
+    .pulse-animation{animation:pulse 2s infinite}
+    @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
+  </style>
+</head>
+<body>
+  <!-- אלמנטים צפים -->
+  <div class="floating-elements">
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+  </div>
+
+  <div class="container">
+    <!-- כותרת ראשית -->
+    <section class="hero fade-in">
+      <h1>🌟 הירשמו עכשיו וקבלו לקוחות איכותיים</h1>
+      <p>המקום הטוב ביותר למלא את היומן שלכם עם חופשות איכותיות ומשתלמות</p>
+    </section>
+
+    <!-- באנר דחיפות -->
+    <div class="urgency-banner slide-up">
+      <h3>⏰ אנחנו עובדים עכשיו על סגירות לשבוע הקרוב ועד אחרי החגים!</h3>
+    </div>
+
+    <!-- קטע ניסיון -->
+    <section class="experience-section slide-up">
+      <h2 style="text-align:center;font-size:2rem;margin-bottom:40px;color:#5970ea;">💪 הניסיון והמומחיות שלנו</h2>
+      <div class="experience-grid">
+        <div class="stat-card"><div class="stat-number">500+</div><div class="stat-label">מתחמי נופש שותפים</div></div>
+        <div class="stat-card"><div class="stat-number">95%</div><div class="stat-label">שיעור הצלחה במילוי תאריכים</div></div>
+        <div class="stat-card"><div class="stat-number">4.9⭐</div><div class="stat-label">דירוג שביעות רצון ממוצע</div></div>
+        <div class="stat-card"><div class="stat-number">7+</div><div class="stat-label">שנות ניסיון בתחום הנופש</div></div>
+      </div>
+
+      <div class="testimonials">
+        <h3 style="text-align:center;font-size:1.5rem;margin-bottom:30px;color:#fff;">🌟 מה הלקוחות שלנו אומרים:</h3>
+        <div class="testimonials-grid">
+          <div class="testimonial-card"><div class="testimonial-quote">"תוך שבועיים מילאו לנו את כל התאריכים הפנויים! שירות מקצועי ולקוחות איכותיים באמת."</div><div class="testimonial-author">- יוסי כהן, וילת יוקרה בגליל</div></div>
+          <div class="testimonial-card"><div class="testimonial-quote">"הכי טוב שעשינו! הם הביאו לנו לקוחות שבאמת משלמים ומתנהגים יפה. ממליצה בחום!"</div><div class="testimonial-author">- מירי לוי, צימרים רומנטיים בכרמל</div></div>
+          <div class="testimonial-card"><div class="testimonial-quote">"עובדים בצורה מקצועית ושקופה. תוך חודש עברנו מתפוסה של 60% ל-95%. תודה רבה!"</div><div class="testimonial-author">- אבי דוד, ריזורט יוקרה באילת</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- יתרונות -->
+    <section class="benefits slide-up">
+      <div class="benefits-grid">
+        <div class="benefit-card"><div class="benefit-icon">💎</div><h3 class="benefit-title">בלי התחייבות</h3><p class="benefit-desc">תשלום רק על בסיס הצלחות - אין סיכון, רק רווחים</p></div>
+        <div class="benefit-card"><div class="benefit-icon">⭐</div><h3 class="benefit-title">למעלה מ-7 שנות ניסיון</h3><p class="benefit-desc">מומחיות מוכחת עם מאות לקוחות מרוצים בכל הארץ</p></div>
+        <div class="benefit-card"><div class="benefit-icon">⚡</div><h3 class="benefit-title">מילוי מיידי</h3><p class="benefit-desc">אנחנו עובדים עכשיו על מילוי התאריכים הקרובים</p></div>
+      </div>
+    </section>
+
+    <!-- טופס הרשמה -->
+    <section class="form-container slide-up">
+      <form id="propertyForm">
+        <!-- פרטי המתחם -->
+        <div class="form-section">
+          <h3 class="section-title">🏖️ פרטי המתחם שלכם</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="region">📍 איזור בארץ:</label>
+              <select id="region" name="region" required>
+                <option value="">בחר איזור</option>
+                <option value="center">מרכז הארץ</option>
+                <option value="tel-aviv">תל אביב והמרכז</option>
+                <option value="jerusalem">ירושלים והסביבה</option>
+                <option value="north">צפון הארץ</option>
+                <option value="galilee">גליל עליון ותחתון</option>
+                <option value="golan">רמת הגולן</option>
+                <option value="haifa">חיפה והקריות</option>
+                <option value="carmel">הר הכרמל</option>
+                <option value="south">דרום הארץ</option>
+                <option value="dead-sea">ים המלח</option>
+                <option value="eilat">אילת והערבה</option>
+                <option value="negev">הנגב</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="propertyType">🏠 סוג העסק:</label>
+              <select id="propertyType" name="propertyType" required>
+                <option value="">בחר סוג עסק</option>
+                <option value="villa">וילה פרטית</option>
+                <option value="zimmer">צימר רומנטי</option>
+                <option value="suites">סוויטות יוקרה</option>
+                <option value="boutique-hotel">מלון בוטיק</option>
+                <option value="resort">ריזורט</option>
+                <option value="glamping">גלמפינג</option>
+                <option value="apartment">דירת נופש</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="roomCount">🛏️ כמה חדרים/יחידות יש לכם:</label>
+              <select id="roomCount" name="roomCount" required>
+                <option value="">בחר כמות</option>
+                <option value="1">1 יחידה</option>
+                <option value="2-3">2-3 יחידות</option>
+                <option value="4-6">4-6 יחידות</option>
+                <option value="7-10">7-10 יחידות</option>
+                <option value="11-20">11-20 יחידות</option>
+                <option value="20+">יותר מ-20 יחידות</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="targetAudience">👥 קהל יעד עיקרי:</label>
+              <select id="targetAudience" name="targetAudience" required>
+                <option value="">בחר קהל יעד</option>
+                <option value="young-couples">זוגות צעירים</option>
+                <option value="families">משפחות עם ילדים</option>
+                <option value="business">נסיעות עסקים</option>
+                <option value="groups">קבוצות חברים</option>
+                <option value="luxury">לקוחות יוקרה</option>
+                <option value="seniors">גיל השלישי</option>
+                <option value="mixed">מגוון קהלים</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="priceRange">💰 טווח מחירים ללילה (ש"ח):</label>
+              <select id="priceRange" name="priceRange" required>
+                <option value="">בחר טווח מחירים</option>
+                <option value="300-600">300-600 ש"ח</option>
+                <option value="600-800">600-800 ש"ח</option>
+                <option value="800-1200">800-1200 ש"ח</option>
+                <option value="1200-2000">1200-2000 ש"ח</option>
+                <option value="2000-3000">2000-3000 ש"ח</option>
+                <option value="3000+">מעל 3000 ש"ח</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="capacity">👨‍👩‍👧‍👦 קיבולת מקסימלית (איש):</label>
+              <input type="number" id="capacity" name="capacity" min="2" max="100" placeholder="הכנס מספר אנשים" required>
+            </div>
+          </div>
+        </div>
+
+        <!-- מידע נוסף -->
+        <div class="form-section">
+          <h3 class="section-title">📋 מידע נוסף על הנכס</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="availability">📅 זמינות נוכחית:</label>
+              <select id="availability" name="availability" required>
+                <option value="">בחר זמינות</option>
+                <option value="immediate">זמין מיידית</option>
+                <option value="week">זמין השבוע</option>
+                <option value="month">זמין החודש</option>
+                <option value="season">זמין העונה</option>
+                <option value="limited">זמינות מוגבלת</option>
+                <option value="full">תפוס לחלוטין</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="experience">⭐ כמה שנות ניסיון יש לכם בתחום:</label>
+              <select id="experience" name="experience" required>
+                <option value="">בחר ניסיון</option>
+                <option value="new">עסק חדש (עד שנה)</option>
+                <option value="1-2">1-2 שנים</option>
+                <option value="3-5">3-5 שנים</option>
+                <option value="5-10">5-10 שנים</option>
+                <option value="10+">מעל 10 שנים</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>🏊‍♀️ מתקנים וכלולים במקום (סמן את הרלוונטיים):</label>
+            <div class="checkbox-grid">
+              <div class="checkbox-item"><input type="checkbox" id="pool" name="amenities" value="pool"><label for="pool">🏊‍♀️ בריכה</label></div>
+              <div class="checkbox-item"><input type="checkbox" id="jacuzzi" name="amenities" value="jacuzzi"><label for="jacuzzi">🛁 ג'קוזי</label></div>
+              <div class="checkbox-item"><input type="checkbox" id="kitchen" name="amenities" value="kitchen"><label for="kitchen">🍳 מטבח מאובזר</label></div>
+              <div class="checkbox-item"><input type="checkbox" id="parking" name="amenities" value="parking"><label for="parking">🚗 חניה</label></div>
+              <div class="checkbox-item"><input type="checkbox" id="garden" name="amenities" value="garden"><label for="garden">🌳 גן/חצר</label></div>
+              <div class="checkbox-item"><input type="checkbox" id="bbq" name="amenities" value="bbq"><label for="bbq">🔥 מנגל</label></div>
+              <div class="checkbox-item"><input type="checkbox" id="spa" name="amenities" value="spa"><label for="spa">💆‍♀️ ספא/עיסויים</label></div>
+              <div class="checkbox-item"><input type="checkbox" id="gym" name="amenities" value="gym"><label for="gym">💪 חדר כושר</label></div>
+              <div class="checkbox-item"><input type="checkbox" id="wifi" name="amenities" value="wifi"><label for="wifi">📶 WiFi מהיר</label></div>
+              <div class="checkbox-item"><input type="checkbox" id="breakfast" name="amenities" value="breakfast"><label for="breakfast">🥐 ארוחת בוקר</label></div>
+              <div class="checkbox-item"><input type="checkbox" id="pets" name="amenities" value="pets"><label for="pets">🐕 ידידותי לחיות מחמד</label></div>
+              <div class="checkbox-item"><input type="checkbox" id="accessible" name="amenities" value="accessible"><label for="accessible">♿ נגיש לנכים</label></div>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="additionalInfo">📝 מידע נוסף שחשוב לנו לדעת:</label>
+              <textarea id="additionalInfo" name="additionalInfo" rows="4" placeholder="ספרו לנו עוד על המקום..."></textarea>
+            </div>
+            <div class="form-group">
+              <label for="urgency">🎯 רמת דחיפות למילוי תאריכים:</label>
+              <select id="urgency" name="urgency" required>
+                <option value="">בחר רמת דחיפות</option>
+                <option value="low">נמוכה - יש זמן</option>
+                <option value="medium">בינונית - רוצה תוצאות החודש</option>
+                <option value="high">גבוהה - צריך מהר!</option>
+                <option value="urgent">דחוף מאוד - השבוע!</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- פרטי יצירת קשר -->
+        <div class="form-section">
+          <h3 class="section-title">📞 פרטים לצורך יצירת קשר</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="ownerName">👤 שם מלא של הבעלים:</label>
+              <input type="text" id="ownerName" name="ownerName" placeholder="השם המלא שלך" required>
+            </div>
+            <div class="form-group">
+              <label for="phone">📱 מספר טלפון (ליצירת קשר):</label>
+              <input type="tel" id="phone" name="phone" placeholder="050-1234567" required>
+            </div>
+            <div class="form-group">
+              <label for="email">📧 כתובת אימייל:</label>
+              <input type="email" id="email" name="email" placeholder="your@email.com" required>
+            </div>
+            <div class="form-group">
+              <label for="propertyName">🏖️ שם המתחם/העסק:</label>
+              <input type="text" id="propertyName" name="propertyName" placeholder="שם המקום שלכם" required>
+            </div>
+          </div>
+        </div>
+
+        <!-- כפתור שליחה -->
+        <div class="submit-container">
+          <button type="submit" class="submit-btn pulse-animation">
+            📲 דברו איתנו עכשיו ונמלא לכם את התאריכים!
+          </button>
+        </div>
+      </form>
+
+      <!-- הודעת הצלחה -->
+      <div id="successMessage" class="success-message">
+        <h3>🎉 תודה רבה! הפרטים נשלחו בהצלחה</h3>
+        <p>נחזור אליכם בהקדם האפשרי עם הצעות קונקרטיות למילוי התאריכים</p>
+      </div>
+    </section>
+
+    <!-- אמינות -->
+    <section class="trust-section slide-up">
+      <h2 class="trust-title">🛡️ אמינות ומקצועיות ברמה הגבוהה ביותר</h2>
+      <p class="trust-desc">
+        עם למעלה מ-7 שנות ניסיון בתחום הנופש והתיירות... (כמו אצלך)
+      </p>
+    </section>
+  </div>
+
+  <script>
+    // ---------- Hybrid Smart Mode (כמו ב-CRM) ----------
+    const SUPABASE_URL = 'https://jwgumccuvvvqzskqutmg.supabase.co'; // דמו
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp3Z3VtY2N1dnZ2cXpza3F1dG1nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ3OTc1NDQsImV4cCI6MjA3MDM3MzU0NH0.pypaRytqdgp7OOp4KC1b36bDUOvl5btkOZr0aH6uFLw';
+
+    const isDemoCredentials = SUPABASE_URL.includes('jwgumccuvvvqzskqutmg') ||
+                              SUPABASE_URL === 'YOUR_SUPABASE_URL_HERE';
+    const useSupabase = !isDemoCredentials && SUPABASE_URL && SUPABASE_KEY &&
+                        typeof window.supabase !== 'undefined';
+
+    let supabaseClient = null;
+    if (useSupabase) {
+      try {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        console.log('🌟 Supabase connected - Production mode');
+      } catch (err) {
+        console.warn('⚠️ Supabase init failed, fallback to localStorage');
+        supabaseClient = null;
+      }
+    } else {
+      console.log('📦 Demo mode - Using localStorage');
+      console.log('💡 To enable Supabase: Replace SUPABASE_URL and SUPABASE_KEY with your credentials');
+    }
+
+    // ---------- Utils ----------
+    const LS_KEY = 'luxury_clients'; // בדיוק מה שה-CRM קורא
+    const saveLocal = (list)=> localStorage.setItem(LS_KEY, JSON.stringify(list));
+    const loadLocal = ()=> { try { return JSON.parse(localStorage.getItem(LS_KEY)||'[]'); } catch(e){ return []; } };
+
+    function showSuccessMessage(){
+      const box = document.getElementById('successMessage');
+      if (!box) return;
+      box.style.display = 'block';
+      box.scrollIntoView({ behavior:'smooth' });
+      setTimeout(()=> box.style.display='none', 5000);
+    }
+
+    // ---------- מיפוי הדאטה לטבלת clients של ה-CRM ----------
+    function buildClientFromForm(fd){
+      const amenities = fd.getAll('amenities');
+      const notes = [
+        `שם מתחם: ${fd.get('propertyName') || ''}`,
+        `סוג: ${fd.get('propertyType') || ''}`,
+        `איזור: ${fd.get('region') || ''}`,
+        `קיבולת: ${fd.get('capacity') || ''}`,
+        `טווח מחיר: ${fd.get('priceRange') || ''}`,
+        `קהל יעד: ${fd.get('targetAudience') || ''}`,
+        `זמינות: ${fd.get('availability') || ''}`,
+        `ניסיון: ${fd.get('experience') || ''}`,
+        `מתקנים: ${amenities.join(', ') || '—'}`,
+        `מידע נוסף: ${fd.get('additionalInfo') || '—'}`,
+        `דחיפות: ${fd.get('urgency') || ''}`
+      ].join(' | ');
+
+      return {
+        id: crypto.randomUUID(),
+        name: fd.get('ownerName'),
+        phone: fd.get('phone'),
+        email: fd.get('email'),
+        city: '',                   // אפשר להשלים בעתיד
+        event_type: 'property_signup',
+        event_date: null,
+        guests: null,
+        preferred_region: fd.get('region'),
+        budget: fd.get('priceRange'),
+        status: 'new_lead',
+        priority: 'medium',
+        source: 'landing',
+        notes,
+        follow_up: null,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+    }
+
+    async function saveClient(client){
+      // אם יש Supabase אמיתי—נכתוב לטבלת clients
+      if (supabaseClient){
+        try{
+          const { error } = await supabaseClient.from('clients').insert(client);
+          if (error) throw error;
+          console.log('✅ Saved to Supabase (clients)');
+        }catch(err){
+          console.warn('⚠️ Supabase insert failed, mirroring to local', err);
+        }
+      }
+      // מראה מקומי כדי שה-CRM יראה מיד
+      const list = loadLocal();
+      list.unshift(client);
+      saveLocal(list);
+    }
+
+    // ---------- Init ----------
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('🚀 דף נחיתה למתחמי נופש יוקרתיים הופעל');
+      setupEventListeners();
+      initAnimations();
+    });
+
+    function setupEventListeners(){
+      const form = document.getElementById('propertyForm');
+      if (!form) return;
+      form.addEventListener('submit', async (e)=>{
+        e.preventDefault();
+        try{
+          const fd = new FormData(form);
+          const client = buildClientFromForm(fd);
+          console.log('📝 Lead → CRM:', client);
+          await saveClient(client);
+          showSuccessMessage();
+          form.reset();
+        }catch(err){
+          console.error('❌ שגיאה בשליחת הטופס:', err);
+          alert('אירעה שגיאה בשליחת הטופס. אנא נסו שוב.');
+        }
+      });
+    }
+
+    // ---------- אנימציות כניסה ----------
+    function initAnimations(){
+      const observer = new IntersectionObserver((entries)=>{
+        entries.forEach(entry=>{
+          if (entry.isIntersecting) {
+            entry.target.style.animationDelay = '0s';
+            entry.target.classList.add('fade-in');
+          }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll('.slide-up, .fade-in').forEach(el=>observer.observe(el));
+    }
+
+    console.log('🎯 דף נחיתה מוכן לקבלת לידים! → יופיעו ב-CRM תחת "ליד חדש".');
+  </script>
+</body>
+</html>
+<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
